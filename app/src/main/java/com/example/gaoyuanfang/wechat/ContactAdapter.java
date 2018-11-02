@@ -1,11 +1,14 @@
 package com.example.gaoyuanfang.wechat;
 
 import android.content.Context;
+import android.print.PageRange;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +18,10 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private OnItemClickListener mItemClickListener;
+
+
     private LayoutInflater mLayoutInflater;
     private Context mContext;
     private String[] mContactNames;         // 联系人名称字符串数组
@@ -40,6 +47,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         for (int i = 0; i < mContactNames.length; i++) {
             String pinyin = Utils.getPinYin(mContactNames[i]);
+            Log.i("pinyinName",pinyin);
             map.put(pinyin, mContactNames[i]);
             mContactList.add(pinyin);
         }
@@ -72,8 +80,18 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (viewType == ITEM_TYPE.ITEM_TYPE_CHARACTER.ordinal()) {
             return new CharacterHolder(mLayoutInflater.inflate(R.layout.item_character, parent, false));
         } else {
-            return new ContactHolder(mLayoutInflater.inflate(R.layout.item_contact, parent, false));
+            final ContactHolder contactHolder = new ContactHolder(mLayoutInflater.inflate(R.layout.item_contact, parent, false));
+            contactHolder.mTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = contactHolder.getAdapterPosition();
+                    Contact contact = resultList.get(position);
+                    Toast.makeText(v.getContext(),"clicked name"+contact.getmName()+"type"+contact.getmType(),Toast.LENGTH_LONG).show();
+                }
+            });
+            return contactHolder;
         }
+
     }
 
     @Override
@@ -97,7 +115,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class CharacterHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
-
         CharacterHolder(View view) {
             super(view);
 
@@ -107,10 +124,10 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class ContactHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
-
+        View contactView;
         ContactHolder(View view) {
             super(view);
-
+            contactView = view;
             mTextView = (TextView) view.findViewById(R.id.contact_name);
         }
     }
@@ -125,5 +142,9 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         return -1; //-1不滑动
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
     }
 }
