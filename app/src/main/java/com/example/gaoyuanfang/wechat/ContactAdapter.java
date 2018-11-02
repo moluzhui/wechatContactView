@@ -1,6 +1,7 @@
 package com.example.gaoyuanfang.wechat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.print.PageRange;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +22,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private OnItemClickListener mItemClickListener;
 
+//    private Intent intent;
 
     private LayoutInflater mLayoutInflater;
     private Context mContext;
@@ -86,7 +88,12 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 public void onClick(View v) {
                     int position = contactHolder.getAdapterPosition();
                     Contact contact = resultList.get(position);
-                    Toast.makeText(v.getContext(),"clicked name"+contact.getmName()+"type"+contact.getmType(),Toast.LENGTH_LONG).show();
+//                    Toast.makeText(v.getContext(),"clicked name"+contact.getmName()+"type"+contact.getmType(),Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent();
+                    intent.setClass(mContext,ChatingActivity.class);
+                    intent.putExtra("name",contact.getmName());
+                    mContext.startActivity(intent);
+
                 }
             });
             return contactHolder;
